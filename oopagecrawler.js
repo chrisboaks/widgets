@@ -3,19 +3,22 @@ var Crawler = function (object, regex, parsed, errors) {
   this.regex = regex;
   this.parsed = parsed || [];
   this.paths = [];
+  // debugger;
 };
 
 Crawler.prototype.isArray = function (value) {
   return value &&
   typeof value === 'object' &&
-  typeof value.length === 'number' &&
-  typeof value.splice === 'function' &&
-  !(value.propertyIsEnumerable('length'));
+  typeof value.length === 'number'
+  // typeof value.splice === 'function' &&
+  // !(value.propertyIsEnumerable('length'));
 };
 
 Crawler.prototype.type = function (item) {
   if (this.isArray(item)) {
     return "array";
+  } else if (item === null) {
+    return "null";
   } else {
     return typeof item;
   }
@@ -42,11 +45,12 @@ Crawler.prototype.parseString = function (str, pathRoot) {
 };
 
 Crawler.prototype.parseObject = function (obj, pathRoot) {
-  var subcrawler = new Crawler(obj, this.regex, this.parsed);
-  var subpaths = subcrawler.crawl();
-
-  for (var i = 0; i < subpaths.length; i++) {
-    this.paths.push(pathRoot + "." + subpaths[i]);
+  if (Object.keys(obj).indexOf(pathRoot) === -1) {
+    var subcrawler = new Crawler(obj, this.regex, this.parsed);
+    var subpaths = subcrawler.crawl();
+    for (var i = 0; i < subpaths.length; i++) {
+      this.paths.push(pathRoot + "." + subpaths[i]);
+    }
   }
 };
 
@@ -56,10 +60,8 @@ Crawler.prototype.parseOther = function (other) {
 };
 
 Crawler.prototype.crawl = function () {
-  debugger;
-  if (this && this.unparsed(this.object)) {
+  if (this.object && this.unparsed(this.object)) {
     this.parsed.push(this.object);
-
     for (var name in this.object) {
       if (this.unparsed(this.object[name]) && this.object.hasOwnProperty(name)) {
         try {
@@ -76,6 +78,7 @@ Crawler.prototype.crawl = function () {
           case "number":
           case "function":
           case "boolean":
+          case "null":
             this.parsed.push(this.object[name]);
             break;
           default:
@@ -89,6 +92,7 @@ Crawler.prototype.crawl = function () {
       }
     }
   }
+  // console.log(this.parsed.length);
   return this.paths;
 };
 

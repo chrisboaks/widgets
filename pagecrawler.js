@@ -84,7 +84,7 @@ var objectSearch = function (object, regex, bye) {
 
           } else if (typeof object[name] === 'object') {
             // parsedItems.push(object[name]);
-            var nestedPaths = objectSearch(object[name], regex, true);
+            var nestedPaths = objectSearch(object[name], regex);
 
 
             for (var i = 0; i < nestedPaths.length; i++) {
@@ -95,8 +95,6 @@ var objectSearch = function (object, regex, bye) {
             // parsedItems.push(object[name]);
             // console.log(object[name]);
             paths.push(name);
-          } else {
-            // parsedItems.push(object[name]);
           }
         } catch (e) {
           continue;
@@ -111,9 +109,9 @@ var objectSearch = function (object, regex, bye) {
 var isArray = function (value) {
   return value &&
   typeof value === 'object' &&
-  typeof value.length === 'number' &&
-  typeof value.splice === 'function' &&
-  !(value.propertyIsEnumerable('length'));
+  typeof value.length === 'number'
+  // typeof value.splice === 'function' &&
+  // !(value.propertyIsEnumerable('length'));
 };
 
 // checked.
