@@ -25,39 +25,86 @@ Crawler.prototype.unparsed = function (object) {
   return this.parsed.indexOf(object) === -1;
 };
 
-Crawler.prototype.parseArray = function (pathRoot, ary) {
+Crawler.prototype.parseArray = function (ary, pathRoot) {
+  this.parsed.push(ary);
   var indexes = [];
+
   for (var i = 0; i < ary.length; i++) {
-    if (this.ary[i].match(this.regex)) {
+    if (ary[i].match(this.regex)) {
       indexes.push(i);
     }
   }
+
   this.paths.concat(indexes.map(function (index) {
     return pathRoot + "[" + index + "]";
   }));
 };
 
-Crawler.prototype.parseString = function (pathRoot, str) {
+Crawler.prototype.parseString = function (str, pathRoot) {
   if (str.match(this.regex)) {
     this.paths.push(pathRoot);
   }
 };
 
+Crawler.prototype.parseObject = function (obj, pathRoot) {
+  var subcrawler = new Crawler(obj, this.regex, this.parsed);
+  var subpaths = subcrawler.crawl();
 
-// Crawler.prototype.delegate = function (object) {
-//   switch (this.type(object)) {
-//     case "array":
-//       this.parseArray
-//
-//   }
-// };
+  this.paths.concat(subpaths.map(function (sub) {
+    return pathRoot + "." + sub;
+  }));
+};
+
+Crawler.prototype.parseOther = function (other) {
+  console.log("Could not parse", other, "type:", typeof other);
+};
+
+Crawler.prototype.crawl = function () {
+  if (this.unparsed(this.object)) {
+    this.parsed.push(this.object);
+
+    for (var name in this.object) {
+      if (this.unparsed(this.object[name])) {
+        try {
+          switch (this.type(this.object[name])) {
+          case "array":
+            this.parseArray(this.object[name], name);
+            break;
+          case "string":
+            this.parseString(this.object[name], name);
+            break;
+          case "object":
+            this.parseObject(this.object[name], name);
+            break;
+          default:
+            this.parseOther(this.object[name], name);
+            break;
+          }
+        } catch(e) {
+          console.log("Error:", e);
+        }
+      }
+    }
+  }
+  return this.paths;
+};
+
+var a = {
+  b: "apple",
+  c: {
+    d: "banana",
+    e: ["grape", "APPLE"]
+  }
+};
+var c = new Crawler(a, /apple/i);
+c.crawl();
 
 
 
 
 // var objectSearch = function (object, regex) {
 //   // debugger
-//   // var parsedItems = [];
+//   var parsedItems = [];
 //   var paths = [];
 //
 //   if (parsedItems.indexOf(object) === -1) {
@@ -68,26 +115,10 @@ Crawler.prototype.parseString = function (pathRoot, str) {
 //         try {
 //
 //           var pathRoot = name;
+
 //
-//           if (isArray(object[name])) {
-//             var indexes = parseArray(object[name], regex);
-//
-//             for (var i = 0; i < indexes.length; i++) {
-//               paths.push(pathRoot + "[" + indexes[i] + "]");
-//             }
-//
-//           } else if (typeof object[name] === 'object') {
-//             var nestedPaths = objectSearch(object[name], regex);
-//
-//             if (nestedPaths && nestedPaths.length) {
-//               for (var i = 0; i < nestedPaths.length; i++) {
-//                 paths.push(pathRoot + '.' + nestedPaths[i]);
-//               }
-//             }
-//           } else if (typeof object[name] === 'function') {
+//           else if (typeof object[name] === 'function') {
 //             continue;
-//           } else if ((object[name]).match(regex)) {
-//             paths.push(name);
 //           } else {
 //             continue;
 //           }
