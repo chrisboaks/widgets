@@ -79,7 +79,7 @@ var objectSearch = function (object, regex) {
             var indexes = parseArray(object[name], regex);
 
             for (var i = 0; i < indexes.length; i++) {
-              paths.push(pathRoot + "[" + indexes[i] + "]")
+              paths.push(pathRoot + "[" + indexes[i] + "]");
             }
 
           } else if (typeof object[name] === 'object') {
@@ -91,7 +91,7 @@ var objectSearch = function (object, regex) {
               }
             }
           } else if (typeof object[name] === 'function') {
-            // do nothing
+            continue;
           } else if ((object[name]).match(regex)) {
             paths.push(name);
           } else {
