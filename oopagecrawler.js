@@ -1,4 +1,4 @@
-var Crawler = function (object, regex, parsed) {
+var Crawler = function (object, regex, parsed, errors) {
   this.object = object;
   this.regex = regex;
   this.parsed = parsed || [];
@@ -51,15 +51,17 @@ Crawler.prototype.parseObject = function (obj, pathRoot) {
 };
 
 Crawler.prototype.parseOther = function (other) {
-  console.log("Could not parse", other, "type:", typeof other);
+  this.parsed.push(other);
+  console.log("Could not parse", other, "type:", this.type(other));
 };
 
 Crawler.prototype.crawl = function () {
-  if (this.unparsed(this.object)) {
+  debugger;
+  if (this && this.unparsed(this.object)) {
     this.parsed.push(this.object);
 
     for (var name in this.object) {
-      if (this.unparsed(this.object[name])) {
+      if (this.unparsed(this.object[name]) && this.object.hasOwnProperty(name)) {
         try {
           switch (this.type(this.object[name])) {
           case "array":
@@ -71,11 +73,17 @@ Crawler.prototype.crawl = function () {
           case "object":
             this.parseObject(this.object[name], name);
             break;
+          case "number":
+          case "function":
+          case "boolean":
+            this.parsed.push(this.object[name]);
+            break;
           default:
             this.parseOther(this.object[name], name);
             break;
           }
         } catch(e) {
+          this.errorCount++;
           console.log("Error:", e);
         }
       }
@@ -84,6 +92,19 @@ Crawler.prototype.crawl = function () {
   return this.paths;
 };
 
+/////////////////////////////
+
+function objectSearch(object, regex) {
+  var c = new Crawler(object, regex);
+  return c.crawl();
+}
+
+/////////////////////////////
+
+objectSearch(window, /Seagate/i);
+
+/////////////////////////////
+
 var a = {
   b: "apple",
   c: {
@@ -91,5 +112,10 @@ var a = {
     e: ["grape", "APPLE"]
   }
 };
+a.d = a;
+
+objectSearch(a, /apple/i);
+
+
 var c = new Crawler(a, /apple/i);
 c.crawl();

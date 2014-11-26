@@ -58,15 +58,14 @@ var objectSearch = function (object, regex) {
 };
 
 // master
+objectSearch(window, /Seagate/i);
 
 var parsedItems = [];
 
-var objectSearch = function (object, regex) {
-  // debugger
-  // var parsedItems = [];
+var objectSearch = function (object, regex, bye) {
   var paths = [];
 
-  if (parsedItems.indexOf(object) === -1) {
+  if (parsedItems.indexOf(object) === -1 || bye) {
     parsedItems.push(object);
     for (var name in object) {
       if (parsedItems.indexOf(object[name]) === -1) {
@@ -76,6 +75,7 @@ var objectSearch = function (object, regex) {
           var pathRoot = name;
 
           if (isArray(object[name])) {
+            // parsedItems.push(object[name]);
             var indexes = parseArray(object[name], regex);
 
             for (var i = 0; i < indexes.length; i++) {
@@ -83,22 +83,21 @@ var objectSearch = function (object, regex) {
             }
 
           } else if (typeof object[name] === 'object') {
-            var nestedPaths = objectSearch(object[name], regex);
+            // parsedItems.push(object[name]);
+            var nestedPaths = objectSearch(object[name], regex, true);
 
-            if (nestedPaths && nestedPaths.length) {
-              for (var i = 0; i < nestedPaths.length; i++) {
-                paths.push(pathRoot + '.' + nestedPaths[i]);
-              }
+
+            for (var i = 0; i < nestedPaths.length; i++) {
+              paths.push(pathRoot + '.' + nestedPaths[i]);
             }
-          } else if (typeof object[name] === 'function') {
-            continue;
-          } else if ((object[name]).match(regex)) {
+
+          } else if (regex.test(object[name])) {
+            // parsedItems.push(object[name]);
+            // console.log(object[name]);
             paths.push(name);
           } else {
-            continue;
+            // parsedItems.push(object[name]);
           }
-
-
         } catch (e) {
           continue;
         }
