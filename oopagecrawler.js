@@ -27,17 +27,12 @@ Crawler.prototype.unparsed = function (object) {
 
 Crawler.prototype.parseArray = function (ary, pathRoot) {
   this.parsed.push(ary);
-  var indexes = [];
 
   for (var i = 0; i < ary.length; i++) {
     if (ary[i].match(this.regex)) {
-      indexes.push(i);
+      this.paths.push(pathRoot + "[" + i + "]");
     }
   }
-
-  this.paths.concat(indexes.map(function (index) {
-    return pathRoot + "[" + index + "]";
-  }));
 };
 
 Crawler.prototype.parseString = function (str, pathRoot) {
@@ -50,9 +45,9 @@ Crawler.prototype.parseObject = function (obj, pathRoot) {
   var subcrawler = new Crawler(obj, this.regex, this.parsed);
   var subpaths = subcrawler.crawl();
 
-  this.paths.concat(subpaths.map(function (sub) {
-    return pathRoot + "." + sub;
-  }));
+  for (var i = 0; i < subpaths.length; i++) {
+    this.paths.push(pathRoot + "." + subpaths[i]);
+  }
 };
 
 Crawler.prototype.parseOther = function (other) {
@@ -98,38 +93,3 @@ var a = {
 };
 var c = new Crawler(a, /apple/i);
 c.crawl();
-
-
-
-
-// var objectSearch = function (object, regex) {
-//   // debugger
-//   var parsedItems = [];
-//   var paths = [];
-//
-//   if (parsedItems.indexOf(object) === -1) {
-//     parsedItems.push(object);
-//     for (var name in object) {
-//       if (parsedItems.indexOf(object[name]) === -1) {
-//         parsedItems.push(object[name]);
-//         try {
-//
-//           var pathRoot = name;
-
-//
-//           else if (typeof object[name] === 'function') {
-//             continue;
-//           } else {
-//             continue;
-//           }
-//
-//
-//         } catch (e) {
-//           continue;
-//         }
-//       }
-//     }
-//   }
-//   return paths;
-// };
-//
