@@ -3,15 +3,12 @@ var Crawler = function (object, regex, parsed, errors) {
   this.regex = regex;
   this.parsed = parsed || [];
   this.paths = [];
-  // debugger;
 };
 
 Crawler.prototype.isArray = function (value) {
   return value &&
   typeof value === 'object' &&
-  typeof value.length === 'number'
-  // typeof value.splice === 'function' &&
-  // !(value.propertyIsEnumerable('length'));
+  typeof value.length === 'number';
 };
 
 Crawler.prototype.type = function (item) {
