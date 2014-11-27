@@ -1,3 +1,14 @@
+
+
+
+
+
+///// DEPRECATED/////////
+
+
+
+
+
 // function objectSearch(object, regex) {
 //   // Your code here ...
 //   // Return the path to every field within object that matches regex
