@@ -68,6 +68,13 @@ class Board
     self.class.new(rows.map(&:dup))
   end
 
-
-
+  def print
+    board_state = rows.flatten.each_with_index.map do |val, i|
+      val ? val.to_s.upcase : i + 1
+    end
+    new_rows = board_state.each_slice(3).to_a.map do |row|
+      row.join(' | ').insert(0, ' ')
+    end
+    puts new_rows.join("\n" + '-' * 11 + "\n")
+  end
 end
