@@ -1,4 +1,6 @@
 require_relative 'board'
+require_relative 'players'
+require_relative 'ttt_node'
 
 class Game
   attr_reader :board, :players, :current_player_mark
@@ -10,6 +12,7 @@ class Game
   end
 
   def play
+    board.print
     play_turn until board.over?
 
     if board.won?
@@ -20,7 +23,7 @@ class Game
   end
 
   def place_mark(posn)
-    if board.empty?(posn)
+    if board.valid?(posn)
       board[posn] = current_player_mark
       true
     else
@@ -30,10 +33,10 @@ class Game
 
   def play_turn
     loop do
-      posn = players[current_player_mark].move
+      posn = players[current_player_mark].move(self, current_player_mark)
       break if place_mark(posn)
     end
+    board.print
     @current_player_mark = (current_player_mark == :x ? :o : :x)
   end
-
 end

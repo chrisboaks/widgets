@@ -14,7 +14,8 @@ class Board
   end
 
   def diags
-    [[self[0, 0], self[1, 1], self[2, 2]], [self[0, 2], self[1, 1], self[2, 0]]]
+    [[self[[0, 0]], self[[1, 1]], self[[2, 2]]],
+     [self[[0, 2]], self[[1, 1]], self[[2, 0]]]]
   end
 
   def [](posn)
@@ -27,6 +28,10 @@ class Board
 
     row, col = posn
     @rows[row][col] = mark
+  end
+
+  def valid?(posn)
+    posn.max <= 2 && posn.min >= 0 && empty?(posn)
   end
 
   def empty?(posn)
@@ -57,7 +62,7 @@ class Board
   end
 
   def tied?
-    rows.flatten.none? { |posn| empty?(posn) }
+    rows.flatten.none?(&:nil?)
   end
 
   def over?
