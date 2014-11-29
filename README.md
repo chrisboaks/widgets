@@ -1,3 +1,3 @@
 widgets
 =======
-Miscellaneous JS projects.
+Miscellaneous small projects.
