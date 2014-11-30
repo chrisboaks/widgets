@@ -101,22 +101,3 @@ function objectSearch(object, regex) {
 }
 
 /////////////////////////////
-
-objectSearch(window, /Seagate/i);
-
-/////////////////////////////
-
-var a = {
-  b: "apple",
-  c: {
-    d: "banana",
-    e: ["grape", "APPLE"]
-  }
-};
-a.d = a;
-
-objectSearch(a, /apple/i);
-
-
-var c = new Crawler(a, /apple/i);
-c.crawl();
