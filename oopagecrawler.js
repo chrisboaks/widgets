@@ -53,7 +53,7 @@ Crawler.prototype.parseObject = function (obj, pathRoot) {
 
 Crawler.prototype.parseOther = function (other) {
   this.parsed.push(other);
-  console.log("Could not parse", other, "type:", this.type(other));
+  // console.log("Could not parse", other, "type:", this.type(other));
 };
 
 Crawler.prototype.crawl = function () {
@@ -83,13 +83,11 @@ Crawler.prototype.crawl = function () {
             break;
           }
         } catch(e) {
-          this.errorCount++;
-          console.log("Error:", e);
+          // console.log("Error:", e);
         }
       }
     }
   }
-  // console.log(this.parsed.length);
   return this.paths;
 };
 
