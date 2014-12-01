@@ -12,6 +12,7 @@ class Game
   end
 
   def play
+    system('clear') || system('cls')
     board.print
     play_turn until board.over?
 
@@ -36,7 +37,32 @@ class Game
       posn = players[current_player_mark].move(self, current_player_mark)
       break if place_mark(posn)
     end
+    system('clear') || system('cls')
     board.print
     @current_player_mark = (current_player_mark == :x ? :o : :x)
   end
 end
+
+def start_game
+  puts 'Who wants to play Tic Tac Toe?'
+  puts '1. Human v. Human'
+  puts '2. Human v. Computer'
+  puts '3. Computer v. Human'
+  puts '4. Computer v. Computer'
+  print 'Enter your selection:  '
+  case gets.chomp.to_i
+  when 1
+    Game.new(HumanPlayer.new, HumanPlayer.new).play
+  when 2
+    Game.new(HumanPlayer.new, ComputerPlayer.new).play
+  when 3
+    Game.new(ComputerPlayer.new, HumanPlayer.new).play
+  when 4
+    Game.new(ComputerPlayer.new, ComputerPlayer.new).play
+  else
+    puts "Sorry, I didn't understand that"
+    start_game
+  end
+end
+
+start_game if __FILE__ == $PROGRAM_NAME
