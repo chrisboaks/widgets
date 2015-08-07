@@ -73,6 +73,8 @@ Crawler.prototype.crawl = function () {
             this.parseObject(this.object[name], name);
             break;
           case "number":
+            this.parseObject('' + this.object[name], name);
+            break;
           case "function":
           case "boolean":
           case "null":
